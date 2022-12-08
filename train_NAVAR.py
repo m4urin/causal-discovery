@@ -1,11 +1,13 @@
 import torch
 import numpy as np
 from dataloader import DataLoader
-from NAVAR import NAVAR, NAVARLSTM
+from src.models.navar import NAVAR
+from src.models.navar_lstm import NAVARLSTM
+
 
 def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learning_rate=1e-4,
                           batch_size=300, lambda1=0, val_proportion=0.0,  weight_decay=0,
-                          check_every=1000, hidden_layers=1, normalize=True, split_timeseries=False, lstm=False):
+                          check_every=1000, hidden_layers=1, normalize=True, split_timeseries=False, model='mlp'):
     """
     Trains a Neural Additive Vector Autoregression (NAVAR) model on time series data and scores the
     potential causal links between variables.
