@@ -1,3 +1,5 @@
+!!! Repo was copied from [NAVAR (https://github.com/bartbussmann/NAVAR)](https://github.com/bartbussmann/NAVAR).
+
 # NAVAR
 
 Code for Neural Additive Vector Autoregression Models for Causal Discovery in Time Series Data ([Paper](paper/Neural_Additive_Vector_Autoregression_Models_for_Causal_Discovery_in_Time_Series.pdf), [Supplementary Material](paper/Supplementary_Material.pdf)).
