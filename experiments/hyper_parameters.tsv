@@ -1,37 +1,37 @@
-dataset	experiment_name	model	lambda1	batch_size	wd	hidden_nodes	learning_rate	hl	maxlags
+dataset	experiment_name	method	lambda1	batch_size	wd	hidden_nodes	learning_rate	hidden_layers	maxlags
+causeme	nonlinear-VAR_N-3_T-300	lstm	0.137	64	8.95E-04	16	0.0001	1	0
+causeme	nonlinear-VAR_N-5_T-300	lstm	0.2445	32	2.68E-04	32	0.00005	1	0
+causeme	nonlinear-VAR_N-10_T-300	lstm	0.0784	128	7.12E-04	64	0.0001	1	0
+causeme	nonlinear-VAR_N-20_T-300	lstm	0.3512	64	1.90E-06	128	0.00005	1	0
+causeme	TestCLIM_N-40_T-250	lstm	0.2334	128	6.23E-04	64	0.0002	1	0
+causeme	TestWEATH_N-10_T-2000	lstm	0.0172	256	1.68E-03	8	0.005	1	0
+causeme	river-runoff_N-12_T-4600	lstm	0.05443097552	128	4.47E-04	128	0.001	1	0
+dream	ecoli1	lstm	0.2602594711	46	1.50E-05	10	0.002	1	0
+dream	ecoli2	lstm	0.1981487034	46	2.27E-05	10	0.002	1	0
+dream	yeast1	lstm	0.1768783372	46	2.63E-05	10	0.002	1	0
+dream	yeast2	lstm	0.2762570334	46	1.84E-05	10	0.002	1	0
+dream	yeast3	lstm	0.2180623495	46	6.41E-06	10	0.002	1	0
 causeme	nonlinear-VAR_N-3_T-300	mlp	0.1344	64	2.90E-03	32	0.00005	1	5
-causeme	nonlinear-VAR_N-3_T-300	lstm	0.137	64	8.95E-04	16	0.0001	1	
-causeme	nonlinear-VAR_N-3_T-300	tcn							
 causeme	nonlinear-VAR_N-5_T-300	mlp	0.1596	64	2.42E-03	16	0.0001	1	5
-causeme	nonlinear-VAR_N-5_T-300	lstm	0.2445	32	2.68E-04	32	0.00005	1	
-causeme	nonlinear-VAR_N-5_T-300	tcn							
 causeme	nonlinear-VAR_N-10_T-300	mlp	0.2014	64	8.56E-03	128	0.0005	1	5
-causeme	nonlinear-VAR_N-10_T-300	lstm	0.0784	128	7.12E-04	64	0.0001	1	
-causeme	nonlinear-VAR_N-10_T-300	tcn							
 causeme	nonlinear-VAR_N-20_T-300	mlp	0.2434	64	4.51E-03	32	0.0002	1	5
-causeme	nonlinear-VAR_N-20_T-300	lstm	0.3512	64	1.90E-06	128	0.00005	1	
-causeme	nonlinear-VAR_N-20_T-300	tcn							
 causeme	TestCLIM_N-40_T-250	mlp	0.3924	16	4.32E-03	32	0.0002	1	2
-causeme	TestCLIM_N-40_T-250	lstm	0.2334	128	6.23E-04	64	0.0002	1	
-causeme	TestCLIM_N-40_T-250	tcn							
 causeme	TestWEATH_N-10_T-2000	mlp	0.056	64	4.90E-03	32	0.0001	1	5
-causeme	TestWEATH_N-10_T-2000	lstm	0.0172	256	1.68E-03	8	0.005	1	
-causeme	TestWEATH_N-10_T-2000	tcn							
 causeme	river-runoff_N-12_T-4600	mlp	0.1708744134	256	5.09E-04	8	0.0001	1	5
-causeme	river-runoff_N-12_T-4600	lstm	0.05443097552	128	4.47E-04	128	0.001	1	
-causeme	river-runoff_N-12_T-4600	tcn							
-dream	ecoli1	mlp	0.1883104647	128	0.0001114998562	10	0.0005		2
-dream	ecoli1	lstm	0.2602594711	46	1.50E-05	10	0.002	1	21
-dream	ecoli1	tcn							
+dream	ecoli1	mlp	0.1883104647	128	0.0001114998562	10	0.0005	1	2
 dream	ecoli2	mlp	0.2010921195	32	0.0001709504624	10	0.001	1	2
-dream	ecoli2	lstm	0.1981487034	46	2.27E-05	10	0.002	1	21
-dream	ecoli2	tcn							
 dream	yeast1	mlp	0.2696705566	16	0.0001424829721	10	0.002	2	2
-dream	yeast1	lstm	0.1768783372	46	2.63E-05	10	0.002	1	21
-dream	yeast1	tcn							
 dream	yeast2	mlp	0.156251061	256	0.0002012540883	10	0.0002	1	2
-dream	yeast2	lstm	0.2762570334	46	1.84E-05	10	0.002	1	21
-dream	yeast2	tcn							
 dream	yeast3	mlp	0.1559213167	16	0.0001644367617	10	0.0002	1	2
-dream	yeast3	lstm	0.2180623495	46	6.41E-06	10	0.002	1	21
-dream	yeast3	tcn							
+causeme	nonlinear-VAR_N-3_T-300	tcn	-1	-1	-1	-1	-1	-1	-1
+causeme	nonlinear-VAR_N-5_T-300	tcn	0.2445	1	2.68E-04	32	0.00005	1	300
+causeme	nonlinear-VAR_N-10_T-300	tcn	-1	-1	-1	-1	-1	-1	-1
+causeme	nonlinear-VAR_N-20_T-300	tcn	-1	-1	-1	-1	-1	-1	-1
+causeme	TestCLIM_N-40_T-250	tcn	-1	-1	-1	-1	-1	-1	-1
+causeme	TestWEATH_N-10_T-2000	tcn	-1	-1	-1	-1	-1	-1	-1
+causeme	river-runoff_N-12_T-4600	tcn	-1	-1	-1	-1	-1	-1	-1
+dream	ecoli1	tcn	-1	-1	-1	-1	-1	-1	-1
+dream	ecoli2	tcn	-1	-1	-1	-1	-1	-1	-1
+dream	yeast1	tcn	-1	-1	-1	-1	-1	-1	-1
+dream	yeast2	tcn	-1	-1	-1	-1	-1	-1	-1
+dream	yeast3	tcn	-1	-1	-1	-1	-1	-1	-1

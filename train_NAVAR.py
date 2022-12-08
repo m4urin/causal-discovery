@@ -1,13 +1,19 @@
+from math import ceil
+
 import torch
 import numpy as np
+from tqdm import trange
+
 from dataloader import DataLoader
 from src.models.navar import NAVAR
 from src.models.navar_lstm import NAVARLSTM
+from src.models.navar_tcn import NAVARTCN
 
 
-def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learning_rate=1e-4,
-                          batch_size=300, lambda1=0, val_proportion=0.0,  weight_decay=0,
-                          check_every=1000, hidden_layers=1, normalize=True, split_timeseries=False, model='mlp'):
+def train_NAVAR(data, method, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learning_rate=1e-4,
+                batch_size=300, lambda1=0, val_proportion=0.0, weight_decay=0,
+                check_every=1000, hidden_layers=1, normalize=True, split_timeseries=False,
+                **kwargs):
     """
     Trains a Neural Additive Vector Autoregression (NAVAR) model on time series data and scores the
     potential causal links between variables.
@@ -56,24 +62,38 @@ def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learni
 
         loss_val: float
             Validation loss of the model after training
+            :param method:
     """
     # T is the number of time steps, N the number of variables
     T, N = data.shape
 
     # initialize the NAVAR model
-    if lstm:
-        model = NAVARLSTM(N, hidden_nodes, maxlags, dropout=dropout, hidden_layers=hidden_layers)
-    else:
+    if method == 'mlp':
         model = NAVAR(N, hidden_nodes, maxlags, dropout=dropout, hidden_layers=hidden_layers)
+    elif method == 'lstm':
+        model = NAVARLSTM(N, hidden_nodes, maxlags, dropout=dropout, hidden_layers=hidden_layers)
+    elif method == 'tcn':
+        model = NAVARTCN(N, hidden_nodes, maxlags, dropout=dropout, hidden_layers=hidden_layers)
+    else:
+        raise ValueError(f"method type '{method}' is not supported, choose one from ['mlp', 'lstm', 'tcn']")
 
     # use Mean Squared Error and the Adam optimzer
     criterion = torch.nn.MSELoss(reduction='mean')
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
+    # (300, 5)
+    data = torch.tensor(data)
+    print('data:', data.size(), data[:8, 0])
+
+
+
     # obtain the training and validation data
-    dataset = DataLoader(data, maxlags, normalize=normalize, val_proportion=val_proportion, split_timeseries=split_timeseries, lstm=lstm)
+    dataset = DataLoader(data, maxlags, normalize=normalize, val_proportion=val_proportion,
+                         split_timeseries=split_timeseries, lstm=method == 'lstm' or method == 'tcn')
     X_train, Y_train = dataset.train_Xs, dataset.train_Ys
     X_val, Y_val = dataset.val_Xs, dataset.val_Ys
+    X_train, Y_train = X_train[-1:], Y_train[-1:]
+
     # push model and data to GPU if available
     if torch.cuda.is_available():
         model = model.cuda()
@@ -82,6 +102,8 @@ def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learni
         if X_val is not None:
             X_val = X_val.cuda()
             Y_val = Y_val.cuda()
+    print('X_train', X_train.size(), X_train[0, 0, :8])
+    print('Y_train', Y_train.size())
 
     num_training_samples = X_train.shape[0]
     total_loss = 0
@@ -89,16 +111,17 @@ def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learni
 
     # start of training loop
     batch_counter = 0
-    for t in range(1, epochs +1):
-        #obtain batches
+    progress_bar = trange(1, epochs + 1)
+    for t in progress_bar:
+        # obtain batches
         batch_indeces_list = []
         if batch_size < num_training_samples:
             batch_perm = np.random.choice(num_training_samples, size=num_training_samples, replace=False)
-            for i in range(int(num_training_samples/batch_size) + 1):
-                start = i*batch_size
-                batch_i = batch_perm[start:start+batch_size]
+            for i in range(ceil(num_training_samples / batch_size)):
+                start = i * batch_size
+                batch_i = batch_perm[start:start + batch_size]
                 if len(batch_i) > 0:
-                    batch_indeces_list.append(batch_perm[start:start+batch_size])
+                    batch_indeces_list.append(batch_perm[start:start + batch_size])
         else:
             batch_indeces_list = [np.arange(num_training_samples)]
 
@@ -106,16 +129,16 @@ def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learni
             batch_counter += 1
             X_batch = X_train[batch_indeces]
             Y_batch = Y_train[batch_indeces]
-            
+
             # forward pass to calculate predictions and contributions
             predictions, contributions = model(X_batch)
 
             # calculate the loss
-            if not lstm and not split_timeseries:
+            if method != 'lstm' and not split_timeseries:
                 loss_pred = criterion(predictions, Y_batch)
             else:
-                loss_pred = criterion(predictions[:,:,-1], Y_batch[:,:,-1])
-            loss_l1 = (lambda1/N) * torch.mean(torch.sum(torch.abs(contributions), dim=1))
+                loss_pred = criterion(predictions[:, :, -1], Y_batch[:, :, -1])
+            loss_l1 = (lambda1 / N) * torch.mean(torch.sum(torch.abs(contributions), dim=1))
             loss = loss_pred + loss_l1
             total_loss += loss
 
@@ -132,7 +155,7 @@ def train_NAVAR(data, maxlags=5, hidden_nodes=256, dropout=0, epochs=200, learni
                 loss_val = criterion(val_pred, Y_val)
             model.train()
 
-            print(f'iteration {t}. Loss: {total_loss/batch_counter}  Val loss: {loss_val}')
+            progress_bar.set_description(f'iteration {t}. Loss: {total_loss / batch_counter}  Val loss: {loss_val}')
             total_loss = 0
             batch_counter = 0
 

@@ -73,7 +73,7 @@ class NAVARTCN(nn.Module):
         """
         super(NAVARTCN, self).__init__()
 
-        channels = [16, 32, 64]
+        channels = [16, 32]
         kernel_size = 3
 
         self.num_nodes = num_nodes
