@@ -26,7 +26,7 @@ class NAVARTCN(nn.Module):
         super(NAVARTCN, self).__init__()
 
         self.num_nodes = num_nodes
-        self.fc_list = nn.ModuleList([TCNClassifier(1, [8] * maxlags, dropout=dropout)])
+        self.fc_list = nn.ModuleList([TCNClassifier(1, [8] * maxlags, dropout=dropout) for _ in range(num_nodes)])
         self.biases = nn.Parameter(torch.ones(1, num_nodes) * 0.0001)
 
     def forward(self, x):
