@@ -1,5 +1,3 @@
-# copied from https://github.com/bartbussmann/NAVAR/blob/master/NAVAR.py
-
 import torch.nn as nn
 import torch
 
